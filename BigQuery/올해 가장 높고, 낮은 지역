@@ -1,0 +1,27 @@
+-- 올해 가장 높고, 낮은 지역(구)
+
+WITH avg as (
+    SELECT
+      si, gu, ROUND(AVG(price)) AS price_avg
+    FROM
+      `gcp-hackathon-project.real_estate.apartment_transaction_2018`
+    GROUP BY si, gu 
+)
+SELECT 
+  max.si, max_gu, max_price, min_gu, min_price
+FROM
+    (SELECT
+       avg.si ,avg.gu AS max_gu ,x.max_price
+    FROM (SELECT si ,MAX(price_avg) AS max_price FROM avg GROUP BY si) x
+    INNER JOIN avg
+            ON avg.si = x.si
+           AND avg.price_avg = x.max_price) max
+FULL OUTER JOIN
+    (SELECT
+       avg.si ,avg.gu AS min_gu ,y.min_price
+    FROM (SELECT si ,MIN(price_avg) AS min_price FROM avg GROUP BY si) y
+    INNER JOIN avg
+            ON avg.si = y.si
+           AND avg.price_avg = y.min_price) min
+ON max.si = min.si
+ORDER BY si ASC
