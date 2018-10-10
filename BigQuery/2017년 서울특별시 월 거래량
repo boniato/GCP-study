@@ -1,0 +1,6 @@
+-- 2017년 서울특별시 월 거래량
+SELECT si AS x_si, contract_date AS x_contract_date, COUNT(contract_date) AS x_contract_cnt
+FROM `gcp-hackathon-project.real_estate.apartment_transaction_2017`
+WHERE si = '서울특별시'
+GROUP BY si, contract_date
+ORDER BY contract_date ASC
